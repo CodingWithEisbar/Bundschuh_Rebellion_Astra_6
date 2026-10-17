@@ -1,6 +1,20 @@
 # Bundschuh: Rebellion — demo chơi ngay
 
-**Một file duy nhất:** [bundschuh_rebellion.html](bundschuh_rebellion.html).
+**Chọn nhiệm vụ:** [index.html](index.html) có 13 file HTML độc lập tương ứng
+A1–A6, B1–B6 và prototype Joß Fritz; Godot F5 mở cùng danh sách mục tiêu. Các HTML
+dùng chính menu, đồ họa isometric, HUD, camera và minimap của file skirmish.
+Có khai thác, giao hàng, xây nhà/trại lính/kho, tuyển quân, giao chiến và thắng/thua
+theo nhiệm vụ. H/B/C, Tab, V, Home, WASD và zoom giữ cách dùng của file mẫu.
+Q/R/T chọn hero/dân cần cứu/xe và sứ giả. Mỗi file khoảng 4 MB, có bản AAC nhạc
+menu nhúng sẵn, chạy offline. Đây chưa phải campaign GDD toàn cỡ. Xem
+[hướng dẫn và phạm vi từng màn](../docs/CAMPAIGN_DEMOS.md).
+
+Unit bị công trình che sẽ hiện đường viền theo dáng người, vũ khí hoặc xe:
+xanh nhạt cho quân mình, cam cho quân địch, vàng cho trung lập. Viền chỉ hiện
+trên phần bị mái/tường che và tự mất khi unit đi ra ngoài, không cần chọn unit.
+
+**Demo skirmish kinh tế một file:** [bundschuh_rebellion.html](bundschuh_rebellion.html).
+Các phần còn lại bên dưới mô tả riêng demo skirmish này.
 
 Trên GitHub, mở file rồi chọn **Download raw file** ở góc phải. Lưu đúng đuôi
 `.html`, sau đó mở bằng Chrome, Edge hoặc Firefox trên máy tính. Hoặc tải cả
@@ -130,6 +144,7 @@ Nguồn combat stats duy nhất vẫn là `data/balance/units.v1.json`. Sau khi 
 python3 tools/sync_browser_demo.py
 python3 tools/sync_browser_demo.py --check
 node tests/browser_demo_model.cjs
+node tests/browser_missions_model.cjs
 ```
 
 Lệnh sync dùng validator hiện tại và nhúng JSON/hash vào HTML; không sửa tay block
@@ -144,6 +159,7 @@ Kiểm tra UI tùy chọn cần Playwright + Chromium trên máy phát triển:
 # Đặt PLAYWRIGHT_MODULE nếu module không nằm trong Node resolution path.
 node tests/browser_demo_ui.cjs
 node tests/browser_demo_music.cjs
+node tests/browser_missions_rts_ui.cjs
 ```
 
 Runner mở file offline, thao tác chuột/phím, kiểm tra HUD, xây/tuyển quân, camera,

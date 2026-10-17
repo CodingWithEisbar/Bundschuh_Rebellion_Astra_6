@@ -5,7 +5,9 @@ sandbox và mở rộng backend combat/campaign. Không cần plugin hoặc .NET
 
 ## 1. Chạy và chỉnh thông số
 
-- Mở `project.godot`, F5 → nhập seed ở HUD → **Forest / F8** (hoặc Enter).
+- Mở `project.godot`, F5 → **Sandbox kinh tế Stage 1–5** → nhập seed ở HUD →
+  **Forest / F8** (hoặc Enter). Menu F5 hiện có thêm 13 tactical mission demos;
+  xem [CAMPAIGN_DEMOS.md](CAMPAIGN_DEMOS.md) về phạm vi tích hợp mới.
 - F6/F7 giữ nguyên fixture 16/200 dân của Stage 1. Mọi reset thay thế toàn bộ map.
 - Seed sai giữ nguyên world đang chơi. Seed giống nhau + cùng recipe, phiên bản
   generator và engine tạo cùng map. Bản này chưa có save/load hoặc network format.
@@ -222,9 +224,10 @@ lưu trong `docs/gdd`:
   45–55%, ngân sách tài nguyên và fairness constraints trong GDD.
 - Trên map lớn, tỷ lệ rừng cuối có thể cao hơn nhiều vì dọn túi đất cô lập;
   `initial_forest` không bảo đảm một final forest quota.
-- F8 chỉ tạo sandbox kinh tế/navigation. Combat và stealth là backend có demo;
-  chưa có campaign hoàn chỉnh, hero điều khiển/guard patrol, cutscene hay HUD
-  mission trong scene F5. Scenario designer nối các signals vào scene riêng.
+- F8 chỉ tạo sandbox kinh tế/navigation. Stage 3 ban đầu cung cấp backend;
+  scene `campaign.tscn` hiện tích hợp hero điều khiển, patrol volumes và HUD mục
+  tiêu thành các demo nhỏ. Chưa có campaign toàn cỡ/cutscene; giới hạn và các
+  mốc thời gian rút gọn được ghi riêng trong `CAMPAIGN_DEMOS.md`.
 
 Tham khảo API engine chính thức:
 [Area2D](https://docs.godotengine.org/en/4.5/classes/class_area2d.html),

@@ -46,6 +46,7 @@ def main() -> int:
         ("tests/stage3_tests.gd", ROOT / "test-results" / "stage3.json", 21),
         ("tests/stage4_tests.gd", ROOT / "test-results" / "stage4.json", 23),
         ("tests/stage5_tests.gd", ROOT / "test-results" / "stage5.json", 16),
+        ("tests/campaign_tests.gd", ROOT / "test-results" / "campaign.json", 38),
     ]
     (ROOT / "test-results").mkdir(exist_ok=True)
     (ROOT / "test-results" / ".gdignore").touch()

@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "scope": "Compact playable tactical adaptations of GDD Phase 3, not the full campaign. Timers and armies are reduced; base soldiers use units.v1.json. Stage 3 stealth overrides apply to A1 and P0.",
+  "map_size": [42,30],
+  "capture_seconds": 6,
+  "objective_profile": {"protected_hp":600,"banner_hp":1200,"hostile_hp":180,"melee_armor":2,"pierce_armor":4,"radius":0.65,"surrender_fraction":0.25},
+  "missions": [
+    {
+      "id":"P0","file":"p0_secret_oath.html","title":"Joß Fritz · Lời thề bí mật","side":"bundschuh","place":"Prototype Stage 3 · không gán địa điểm/ngày lịch sử","terrain":"forest","stealth":true,
+      "brief":"Dẫn Joß Fritz qua ba điểm liên lạc rồi tới cửa rừng. Vùng đỏ là thể tích quan sát toàn hướng được đặt sẵn, không bị cây che. Bị thấy đủ 2 giây tính một lần; thoát mọi vùng đủ 2 giây và thanh về 0 mới tái kích hoạt. Lần thứ ba thất bại.",
+      "limits":"Dùng đúng secret_oath_default.tres; bản đồ thu nhỏ, không phải tái dựng một sự kiện của Joß Fritz.",
+      "actors":["joss_fritz"],"army":0,"civilians":0,"carts":0,
+      "points":[["meet1","Liên lạc I",13,7,"meeting"],["meet2","Liên lạc II",24,23,"meeting"],["meet3","Liên lạc III",32,7,"meeting"],["exit","Cửa rừng",38,15,"exit"]],
+      "goals":[{"kind":"visit","label":"Liên lạc đủ ba điểm","actor":"joss_fritz","ids":["meet1","meet2","meet3"],"seconds":2,"escort":0},{"kind":"escape","label":"Joß Fritz tới cửa rừng","tags":["joss_fritz"],"required":1,"to":"exit","after":0}],
+      "ending":"Mạng lưới liên lạc đã nối lại. Đây là kết thúc prototype Stage 3."
+    },
+    {
+      "id":"A1","file":"a1_the_secret_oath.html","title":"The Secret Oath · Lời thề bí mật","side":"bundschuh","place":"Allstedt và vùng phụ cận · 1524","terrain":"village","stealth":true,
+      "brief":"Tập hợp năm nhóm người theo, họp tại ba địa điểm cùng ít nhất ba người hộ tống. Sau đó đưa Müntzer, Anna và ít nhất 12/20 người được tuyển qua cùng cửa thoát. Stage 3 thay Alert/truy bắt bằng ba lần bị phát hiện có tái kích hoạt; không dùng Joß Fritz làm nhân vật lịch sử tại Allstedt.",
+      "limits":"Họp 6 giây thay 30; hero dùng thân dân làng từ JSON, không có kỹ năng hero. Không có Alert/chase GDD cũ.",
+      "actors":["muentzer","anna"],"army":4,"civilians":20,"carts":0,
+      "points":[["meet1","Cuộc họp I",13,7,"meeting"],["meet2","Cuộc họp II",23,23,"meeting"],["meet3","Cuộc họp III",32,8,"meeting"],["exit","Cửa thoát chung",38,15,"exit"]],
+      "goals":[{"kind":"visit","label":"Ba cuộc họp với 3 người theo","actor":"muentzer","ids":["meet1","meet2","meet3"],"seconds":6,"escort":3},{"kind":"escape","label":"Hai hero và 12 người theo cùng thoát","tags":["muentzer","anna","civilian"],"required":14,"minimums":{"muentzer":1,"anna":1,"civilian":12},"to":"exit","after":0}],
+      "ending":"Những người đưa tin và mạng lưới sống sót. Không có nghĩa đã chiếm Allstedt."
+    },
+    {
+      "id":"A2","file":"a2_the_twelve_articles.html","title":"The Twelve Articles · Mười hai điều khoản","side":"bundschuh","place":"Memmingen · đầu tháng 3/1525","terrain":"town","actors":["anna"],"army":18,"civilians":12,"carts":0,
+      "brief":"Giữ hai trong ba cộng đồng, hộ tống 12 dân có nhãn về trại và đưa Anna giao bản in tại ba điểm khác nhau. Bảo vệ ít nhất một xưởng in. Giao kiện đầu báo trước một cuộc tập kích sau 45 giây.",
+      "limits":"Giữ 12 giây thay 60; bản in là ba tương tác của Anna, không có máy in sản xuất/buff hay lựa chọn trả 200F.",
+      "points":[["v1","Cộng đồng Tây",15,7,"capture"],["v2","Cộng đồng Nam",23,23,"capture"],["v3","Cộng đồng Đông",31,8,"capture"],["print1","Xưởng in I",8,7,"protected"],["print2","Xưởng in II",9,23,"protected"],["d1","Điểm nhận I",18,12,"delivery"],["d2","Điểm nhận II",28,20,"delivery"],["d3","Điểm nhận III",36,12,"delivery"],["home","Trại an toàn",5,15,"exit"]],
+      "goals":[{"kind":"control","label":"Giữ 2/3 cộng đồng","ids":["v1","v2","v3"],"required":2,"seconds":12},{"kind":"escape","label":"Cứu 12 dân về trại","tags":["civilian"],"required":12,"to":"home"},{"kind":"visit","label":"Anna giao 3 kiện bản in","actor":"anna","ids":["d1","d2","d3"],"seconds":2,"escort":0}],
+      "protect_any":["print1","print2"],"ending":"Các yêu sách tiếp tục được truyền đi. Anna là nhân vật hư cấu; đây không phải mô phỏng một cuộc vây Memmingen lịch sử."
+    },
+    {
+      "id":"A3","file":"a3_the_eternal_council.html","title":"The Eternal Council · Hội đồng mới","side":"bundschuh","place":"Mühlhausen · tháng 3/1525","terrain":"town","actors":["muentzer"],"army":20,"civilians":0,"carts":3,
+      "brief":"Chiếm ba điểm hội họp và giữ đồng thời; đưa hai trong ba đoàn xe tới chợ. Dẫn Müntzer tới kho để giao 600 Food một lần từ kho tài nguyên thật. Giữ kho sống trước khi giao. Chiếm khu thứ hai báo phản công sau 45 giây.",
+      "limits":"Giữ 18 giây thay 90; có sẵn 900 Food để thử transaction, không triển khai toàn bộ kinh tế Age 3.",
+      "points":[["q1","Khu phố Tây",15,7,"capture"],["q2","Khu phố Chợ",24,15,"capture"],["q3","Khu phố Nam",30,23,"capture"],["depot","Kho cứu tế",9,8,"protected"],["market","Chợ tiếp tế",36,15,"exit"]],
+      "goals":[{"kind":"control","label":"Giữ đồng thời 3 khu phố","ids":["q1","q2","q3"],"required":3,"seconds":18},{"kind":"supply","label":"Giao 600 Food vào kho","actor":"muentzer","point":"depot","amount":600},{"kind":"escape","label":"Đưa 2/3 đoàn xe tới chợ","tags":["cart"],"required":2,"to":"market"}],
+      "protect_until_supply":"depot","ending":"Hội đồng giữ được một trung tâm tổ chức địa phương; không biến Müntzer thành vua của cả phong trào."
+    },
+    {
+      "id":"A4","file":"a4_the_call_to_allstedt.html","title":"The Call to Allstedt · Lời hiệu triệu","side":"bundschuh","place":"Mühlhausen–Allstedt · cuối tháng 4/1525","terrain":"valley","actors":["muentzer"],"army":18,"civilians":0,"carts":0,"reinforcements":true,
+      "brief":"Chọn ít nhất hai tuyến: hộ tống sứ giả tới làng Tây, giao 300 Food tại làng mỏ, hoặc giải vây làng Đông. Mỗi tuyến thành công mở đúng một sứ giả và 12 quân viện. Đưa ít nhất hai sứ giả và 16/24 quân viện của hai tuyến đã chọn về trại.",
+      "limits":"Giữ điểm 6 giây; chỉ có aura Stage 2 +15% tốc độ/tốc đánh. Zeal/Fear/Frenzy toàn campaign và cannon chưa triển khai.",
+      "points":[["r1","Tuyến hộ tống",15,7,"delivery"],["r2","Làng mỏ · 300F",24,23,"supply_route"],["r3","Giải vây",33,9,"capture"],["home","Trại tập hợp",5,15,"exit"]],
+      "goals":[{"kind":"routes","label":"Hoàn tất 2/3 yêu cầu cộng đồng","ids":["r1","r2","r3"],"required":2},{"kind":"escape","label":"Đưa 2 sứ giả và 16 quân viện về","tags":["messenger","reinforcement"],"required":18,"minimums":{"messenger":2,"reinforcement":16},"to":"home","after":0}],
+      "ending":"Hai Haufen đã liên kết. Các nhóm vẫn có mục tiêu và mức cam kết riêng."
+    },
+    {
+      "id":"A5","file":"a5_the_rainbow_road.html","title":"The Rainbow Road · Đường cầu vồng","side":"bundschuh","place":"Đường tới Frankenhausen · trước/tới 11/5/1525","terrain":"forest","actors":["muentzer","anna"],"army":20,"civilians":0,"carts":3,
+      "brief":"Đưa Müntzer, Anna và ít nhất hai trong ba xe hậu cần tới trại phía Đông. Ba tuyến đều có thể đi: đường giữa ngắn nhưng có địch, đường đồi phía Bắc, đường rừng phía Nam. Không xây Town Center mới.",
+      "limits":"Xe là objective NPC dùng thân dân làng từ JSON; chưa có cannon, pack/unpack, sửa chữa hoặc nghiên cứu Age.",
+      "points":[["camp","Trại Frankenhausen",38,15,"exit"],["hill","Đồn trên đồi",23,7,"capture"],["south","Đường rừng",24,23,"delivery"]],
+      "goals":[{"kind":"escape","label":"Hai hero và 2/3 xe tới trại","tags":["muentzer","anna","cart"],"required":4,"minimums":{"muentzer":1,"anna":1,"cart":2},"to":"camp"}],
+      "ending":"Đoàn người tới trại. Màn A6 có khởi đầu cố định, không phụ thuộc thành tích phụ ở đây."
+    },
+    {
+      "id":"A6","file":"a6_frankenhausen.html","title":"Frankenhausen · Giữ một đường sống","side":"bundschuh","place":"Frankenhausen · 15/5/1525","terrain":"hill","actors":["anna"],"army":30,"civilians":40,"couriers":5,"carts":0,"defense":true,
+      "brief":"Chúng ta không thể quyết định kết cục cả cuộc chiến ở đây. Giữ hiệu kỳ đủ lâu để đưa người còn có thể cứu ra ngoài. Sau 15 giây chuẩn bị: giữ Banner tới giây chiến đấu 180, sơ tán ít nhất 24/40 dân, 3/5 courier và Anna. Hạn chót giây 240.",
+      "limits":"Đồng hồ rút từ 3+18/24 phút thành 15+180/240 giây; quân khởi đầu và các đợt ít hơn GDD. Princely Host dùng roster League, không phải Waldburg.",
+      "points":[["banner","Banner Post",20,15,"protected"],["exitN","Cửa thoát Bắc",4,5,"exit"],["exitS","Cửa thoát Nam",4,25,"exit"]],
+      "goals":[{"kind":"survive","label":"Giữ Banner qua 180 giây chiến đấu","point":"banner","seconds":195},{"kind":"escape","label":"Anna, 24 dân và 3 courier thoát","tags":["anna","civilian","courier"],"required":28,"minimums":{"anna":1,"civilian":24,"courier":3},"to":"any_exit"}],
+      "deadline":255,"ending":"Những người được cứu đã thoát. Quân nổi dậy vẫn thất bại tại Frankenhausen; Müntzer bị bắt và bị hành quyết ngày 27/5."
+    },
+    {
+      "id":"B1","file":"b1_quenching_the_sparks.html","title":"Quenching the Sparks · Dập lửa đầu mùa","side":"swabian_league","place":"Leipheim · 4/4/1525","terrain":"river","actors":["waldburg"],"army":20,"civilians":0,"carts":3,"payroll":true,
+      "brief":"Hộ tống hai trong ba xe tới trại tiền phương, chiếm hai vị trí hỏa lực và giữ cổng thành để kích hoạt đầu hàng. Landsknecht được trả lương từ Gold thật mỗi 30 giây; Gold về 0 gây đào ngũ sang phe thù địch.",
+      "limits":"Giữ cổng 12 giây thay 60; dùng payroll Stage 2 mỗi 30 giây thay hợp đồng campaign/grace 120 giây. Vị trí hỏa lực là chốt tĩnh, chưa có cannon.",
+      "points":[["gun1","Vị trí hỏa lực I",18,7,"capture"],["gun2","Vị trí hỏa lực II",25,23,"capture"],["gate","Cổng thành",34,15,"capture"],["camp","Trại tiền phương",37,23,"exit"]],
+      "goals":[{"kind":"escape","label":"Giao 2/3 xe tiếp tế","tags":["cart"],"required":2,"to":"camp"},{"kind":"control","label":"Chiếm hai vị trí hỏa lực","ids":["gun1","gun2"],"required":2,"seconds":1},{"kind":"control","label":"Giữ cổng để đầu hàng","ids":["gate"],"required":1,"seconds":12}],
+      "ending":"Địa phương đầu hàng. Điểm số dựa vào mục tiêu và người sống sót, không thưởng việc tấn công dân đã đầu hàng."
+    },
+    {
+      "id":"B2","file":"b2_the_weingarten_accord.html","title":"The Weingarten Accord · Thương lượng","side":"swabian_league","place":"Weingarten · 17/4/1525; văn bản 22/4","terrain":"valley","actors":["waldburg","envoy"],"army":18,"civilians":0,"carts":3,"payroll":true,
+      "brief":"Giữ trạm hậu cần, đưa hai xe tới nơi và hộ tống sứ giả tới bàn đàm phán rồi trở về trại. Khu đình chiến trung lập: lệnh chủ động tấn công khu này làm thất bại. Quân không tự nhắm vào người trung lập.",
+      "limits":"Giữ trạm 150 giây thay 15 phút; đàm phán 12 thay 60 giây. Không có hệ ngoại giao tự do hoặc văn bản hiệp định tương tác.",
+      "points":[["depot","Trạm hậu cần",8,15,"protected"],["talk","Bàn đàm phán · TRUNG LẬP",32,8,"neutral"],["camp","Điểm giao tiếp tế",35,23,"exit"],["home","Trại sứ giả",5,15,"exit"]],
+      "goals":[{"kind":"survive","label":"Giữ trạm hậu cần 150 giây","point":"depot","seconds":150},{"kind":"escape","label":"Giao 2/3 chuyến tiếp tế","tags":["cart"],"required":2,"to":"camp"},{"kind":"visit","label":"Sứ giả đàm phán","actor":"envoy","ids":["talk"],"seconds":12,"escort":0},{"kind":"escape","label":"Sứ giả trở về trại","tags":["envoy"],"required":1,"to":"home","after":2}],
+      "ending":"Thương lượng mở đường cho đạo quân tiếp tục. Không phải mọi Haufen miền nam đều chấp nhận cùng một hiệp định."
+    },
+    {
+      "id":"B3","file":"b3_battle_of_boblingen.html","title":"Böblingen · Phá thế trận","side":"swabian_league","place":"Böblingen · 12/5/1525","terrain":"hill","actors":["waldburg"],"army":24,"civilians":0,"carts":0,"payroll":true,
+      "brief":"Giữ hai cao điểm hỏa lực, vô hiệu hóa ba chốt pháo và đánh bật hai Haufen khỏi điểm tập kết. Dùng giáo ghim bộ binh, nỏ hỗ trợ và Ritter đánh sườn. Đứng cao hơn cho +25% sát thương sau counter theo Stage 3.",
+      "limits":"Giữ 18 giây thay 90; chốt pháo là mục tiêu HP tĩnh, không mô phỏng pháo bắn/min-range. Không có Fear hoặc nâng Age.",
+      "points":[["h1","Cao điểm Bắc",18,7,"capture"],["h2","Cao điểm Nam",23,23,"capture"],["g1","Chốt pháo I",28,7,"hostile"],["g2","Chốt pháo II",30,15,"hostile"],["g3","Chốt pháo III",33,23,"hostile"],["f1","Haufen Tây",22,14,"capture"],["f2","Haufen Đông",37,14,"capture"]],
+      "goals":[{"kind":"control","label":"Giữ hai cao điểm hỏa lực","ids":["h1","h2"],"required":2,"seconds":18},{"kind":"destroy","label":"Vô hiệu hóa 3 chốt pháo","ids":["g1","g2","g3"],"required":3},{"kind":"control","label":"Đánh bật hai Haufen","ids":["f1","f2"],"required":2,"seconds":6}],
+      "ending":"Thế trận bị phá vỡ. Quân nổi dậy có vũ khí và pháo; giao chiến và cuộc truy sát sau trận là hai phần khác nhau."
+    },
+    {
+      "id":"B4","file":"b4_after_weinsberg.html","title":"After Weinsberg · Sau Weinsberg","side":"swabian_league","place":"Weinsberg · 21/5/1525","terrain":"town","actors":["waldburg"],"army":24,"civilians":0,"carts":0,"payroll":true,"prisoners":true,
+      "brief":"Giữ đồi Weibertreu và khu hành chính cùng lúc; hạ hai chốt chỉ huy để họ đầu hàng, hộ tống đủ 6 giây rồi đưa cả hai về trạm giam. Vô hiệu hóa hai máy in. Tù binh đầu hàng được bảo vệ khỏi đòn kết liễu và có nhãn riêng.",
+      "limits":"Giữ 12 giây thay 60; bắt giữ 6 thay 30 giây. Chỉ huy là mục tiêu scenario đầu hàng ở 25% HP. Không có cơ chế thiêu thành, hành quyết hay tra tấn.",
+      "points":[["hill","Đồi Weibertreu",18,7,"capture"],["hall","Khu hành chính",28,16,"capture"],["cmd1","Chỉ huy I",24,7,"prisoner"],["cmd2","Chỉ huy II",33,23,"prisoner"],["p1","Máy in I",30,8,"hostile"],["p2","Máy in II",35,18,"hostile"],["prison","Trạm giam",5,15,"exit"]],
+      "goals":[{"kind":"control","label":"Giữ đồi và khu hành chính","ids":["hill","hall"],"required":2,"seconds":12},{"kind":"escape","label":"Đưa cả hai tù binh về trạm","tags":["prisoner"],"required":2,"to":"prison"},{"kind":"destroy","label":"Vô hiệu hóa hai máy in","ids":["p1","p2"],"required":2}],
+      "ending":"Weinsberg bị thiêu hủy và chịu trừng phạt tập thể trong lịch sử. Hoàn thành mục tiêu chiến thuật không phủ nhận cuộc trả đũa đó."
+    },
+    {
+      "id":"B5","file":"b5_guns_of_konigshofen.html","title":"Königshofen · Pháo trên Tauber","side":"swabian_league","place":"Königshofen · 2/6/1525","terrain":"river","actors":["waldburg"],"army":26,"civilians":0,"carts":0,"payroll":true,
+      "brief":"Chiếm hai trong ba lối vượt sông, vô hiệu hóa ba trong bốn vị trí pháo và giành khu chỉ huy trên cao. Ba cầu cố định luôn tồn tại. Sau lối vượt đầu, địch báo điều quân dự bị từ bờ Đông.",
+      "limits":"Các vị trí pháo là mục tiêu tĩnh. Gold cấp sẵn hữu hạn cho demo, chưa có Market, mỏ/vận chuyển Gold hoặc siege production.",
+      "points":[["c1","Cầu Bắc",21,7,"capture"],["c2","Cầu Giữa",21,15,"capture"],["c3","Cầu Nam",21,23,"capture"],["g1","Pháo Bắc",29,6,"hostile"],["g2","Pháo Giữa",29,13,"hostile"],["g3","Pháo Nam",29,24,"hostile"],["g4","Pháo Dự bị",35,21,"hostile"],["hq","Chỉ huy cao điểm",37,9,"capture"]],
+      "goals":[{"kind":"control","label":"Kiểm soát 2/3 lối vượt","ids":["c1","c2","c3"],"required":2,"seconds":6},{"kind":"destroy","label":"Vô hiệu hóa 3/4 vị trí pháo","ids":["g1","g2","g3","g4"],"required":3},{"kind":"control","label":"Chiếm khu chỉ huy","ids":["hq"],"required":1,"seconds":6}],
+      "ending":"Haufen thất bại tại Königshofen. Đạo quân League tiếp tục chiến dịch vùng Franken."
+    },
+    {
+      "id":"B6","file":"b6_the_last_haufen.html","title":"The Last Haufen · Đạo quân cuối","side":"swabian_league","place":"Ingolstadt–Sulzdorf, Unterfranken · 4/6/1525","terrain":"valley","actors":["waldburg"],"army":28,"civilians":0,"carts":0,"payroll":true,
+      "brief":"Giữ hai trạm liên lạc, khiến ba khu trại quân sự buông cờ và bảo vệ đoàn quân nhu chính. Sứ giả địch chạy tới trại Đông làm đợt phản công phối hợp tới sớm hơn; chặn sứ giả chỉ thay thời điểm, không thay kết thúc lịch sử.",
+      "limits":"Giữ 18 giây thay 90; phản công 120/45 giây thay 6/2 phút. Ngân sách địch hữu hạn; không có Market, Heavy Cannon hay chiến dịch toàn cỡ.",
+      "points":[["s1","Trạm liên lạc Bắc",17,7,"capture"],["s2","Trạm liên lạc Nam",22,23,"capture"],["f1","Trại I",27,7,"capture"],["f2","Trại II",30,15,"capture"],["f3","Trại III",36,23,"capture"],["depot","Đoàn quân nhu chính",8,15,"protected"]],
+      "goals":[{"kind":"control","label":"Giữ hai trạm liên lạc","ids":["s1","s2"],"required":2,"seconds":18},{"kind":"control","label":"Ba trại quân sự buông cờ","ids":["f1","f2","f3"],"required":3,"seconds":6}],
+      "protect_any":["depot"],"ending":"Chiến thắng quân sự đi cùng tổn thất và trừng phạt. Các cuộc nổi dậy tại những vùng khác còn tiếp diễn sau ngày 4/6."
+    }
+  ]
+}

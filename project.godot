@@ -2,8 +2,8 @@
 config_version=5
 
 [application]
-config/name="Bundschuh: Rebellion — Stage 4"
-run/main_scene="res://scenes/main.tscn"
+config/name="Bundschuh: Rebellion — Campaign Demos"
+run/main_scene="res://scenes/campaign.tscn"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 
 [display]

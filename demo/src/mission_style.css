@@ -1,0 +1,11 @@
+/* Mission content fits inside the original chronicle HUD. */
+.mission {max-width:345px;max-height:calc(100vh - 320px);overflow:auto;pointer-events:auto}
+.mission-goal {display:block;text-align:left;background:transparent;border:0;border-bottom:1px solid #52604b55;padding:7px 0;width:100%;font-size:11px;color:#d6dfc7;line-height:1.5}
+.mission-goal:hover {background:#52604b33}.mission-goal.done{color:#a9cfa7}
+.mission-tools {display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+.mission-tools button {padding:4px 7px;font-size:10px;background:#304037}
+.mission-links {font-size:11px;margin-top:10px}.mission-links a {color:#d8b970}
+.welcome {max-height:calc(100vh - 48px);overflow:auto}
+.modal {max-height:calc(100vh - 40px);overflow:auto}
+.setup h2 {font-size:24px}
+@media(max-width:1150px){.mission{left:14px;max-width:310px}.mission h2{font-size:19px}}

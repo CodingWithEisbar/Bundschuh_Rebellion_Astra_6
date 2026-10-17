@@ -36,6 +36,8 @@ def main():
     else:
         path.write_text(updated, encoding='utf-8')
         print(f'Embedded {len(data["units"])} units in {path.relative_to(ROOT)}')
+    from build_mission_demos import generate
+    generate(args.check)
 
 
 if __name__ == '__main__':

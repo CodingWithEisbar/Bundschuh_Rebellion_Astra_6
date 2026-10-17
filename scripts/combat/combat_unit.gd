@@ -22,6 +22,7 @@ var on_field: bool = true # False while garrisoned/transported; still on payroll
 var mutinous: bool = false
 var max_hp: int
 var hp: int
+var damage_floor_hp: int = 0 # Scenario-only nonlethal surrender; default combat unchanged.
 var attack: int
 var melee_armor: int
 var pierce_armor: int
@@ -108,6 +109,6 @@ func movement_budget(seconds: float) -> float:
 
 func receive_damage(amount: int) -> int:
 	assert(amount >= 0)
-	var removed := mini(hp, amount)
+	var removed := mini(maxi(0, hp - damage_floor_hp), amount)
 	hp -= removed
 	return removed

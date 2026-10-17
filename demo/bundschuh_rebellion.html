@@ -1855,7 +1855,7 @@
               });
           }
           for (const [t, n] of damage) {
-            t.hp = Math.max(0, t.hp - n);
+            t.hp = Math.max(t.damageFloor || 0, t.hp - n);
             if (t.hp === 0) {
               if (t.entity === 'unit') {
                 if (t.owner === 0) this.metrics.lost++;
@@ -1955,9 +1955,9 @@
       /* Presentation and input are adapters over the fixed-step model. */
       const $ = (id) => document.getElementById(id),
         canvas = $('world'),
-        ctx = canvas.getContext('2d'),
         mini = $('minimap'),
         mc = mini.getContext('2d');
+      let ctx = canvas.getContext('2d');
       let game = new Game(),
         chosenFaction = 'bundschuh',
         started = false,
@@ -2415,7 +2415,75 @@
         ctx.fillStyle = color;
         ctx.fillRect(x - w / 2, y, w * clamp(p, 0, 1), 3);
       }
-      function drawUnit(u) {
+      // Reused scratch surfaces contain only the animated body, never selection,
+      // aura or health UI. The contour therefore follows every unit and weapon.
+      const unitMask = document.createElement('canvas'),
+        unitContour = document.createElement('canvas'),
+        maskCtx = unitMask.getContext('2d'),
+        contourCtx = unitContour.getContext('2d');
+      function drawOccludedUnits(b, behind) {
+        if (!b.complete) return;
+        const p = project(b.gx, b.gy),
+          a = b.size * 26,
+          bb = b.size * 13,
+          h = b.type === 'town' ? 45 : b.type === 'barracks' ? 31 : 24,
+          rh = b.type === 'camp' ? 10 : b.type === 'town' ? 30 : 21;
+        const candidates = behind.filter((u) => {
+          const q = project(u.x, u.y);
+          return q.x + 30 > p.x - a - 4 && q.x - 20 < p.x + a + 4 &&
+            q.y + 10 > p.y - h - rh && q.y - 54 < p.y + bb * 2;
+        });
+        if (!candidates.length) return;
+        // Clip to the opaque roof and walls; exposed parts keep their normal sprite.
+        ctx.save();
+        ctx.beginPath();
+        for (const [i, [x, y]] of [
+          [p.x, p.y - h - rh],
+          [p.x + a + 4, p.y + bb - h],
+          [p.x + a, p.y + bb - h],
+          [p.x + a, p.y + bb],
+          [p.x, p.y + bb * 2],
+          [p.x - a, p.y + bb],
+          [p.x - a, p.y + bb - h],
+          [p.x - a - 4, p.y + bb - h],
+        ].entries()) i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        ctx.closePath();
+        ctx.clip();
+        const dpr = Math.min(devicePixelRatio || 1, 2), scale = zoom * dpr,
+          size = Math.ceil(96 * scale);
+        if (unitMask.width !== size || unitMask.height !== size) {
+          unitMask.width = unitMask.height = size;
+          unitContour.width = unitContour.height = size;
+        }
+        for (const u of candidates) {
+          const q = project(u.x, u.y), mainCtx = ctx;
+          maskCtx.setTransform(1, 0, 0, 1, 0, 0);
+          maskCtx.clearRect(0, 0, size, size);
+          maskCtx.setTransform(scale, 0, 0, scale, (40 - q.x) * scale, (64 - q.y) * scale);
+          try {
+            ctx = maskCtx;
+            drawUnit(u, true);
+          } finally {
+            ctx = mainCtx;
+          }
+          contourCtx.clearRect(0, 0, size, size);
+          for (let i = 0; i < 8; i++) {
+            const angle = i * Math.PI / 4;
+            contourCtx.drawImage(unitMask, Math.cos(angle) * 1.5 * dpr, Math.sin(angle) * 1.5 * dpr);
+          }
+          contourCtx.globalCompositeOperation = 'destination-out';
+          contourCtx.drawImage(unitMask, 0, 0);
+          contourCtx.globalCompositeOperation = 'source-in';
+          contourCtx.fillStyle = u.owner === 0 ? '#b9ecda' : u.owner === 1 ? '#ffaf94' : TEAM[u.owner];
+          contourCtx.fillRect(0, 0, size, size);
+          contourCtx.globalCompositeOperation = 'source-over';
+          ctx.shadowColor = '#14251d';
+          ctx.shadowBlur = 2 * dpr;
+          ctx.drawImage(unitContour, q.x - 40, q.y - 64, size / scale, size / scale);
+        }
+        ctx.restore();
+      }
+      function drawUnit(u, bodyOnly = false) {
         const p = project(u.x, u.y),
           chosen = selection.has(u.id),
           mounted = u.type === 'heavy_gendarme',
@@ -2424,14 +2492,16 @@
         const cloth = u.owner === 0 ? '#79aeb5' : '#b16050',
           bob = u.moving ? Math.sin(game.time * 13 * u.buff + u.id) * 1.3 : 0,
           swing = game.time - u.attackTime < 0.22;
-        if (preacher && chosen) {
+        if (preacher && chosen && !bodyOnly) {
           ctx.save();
           ctx.globalAlpha = 0.12;
           ellipse(p.x, p.y, 6 * 36.77, 6 * 18.38, '#e4cd73', '#ffe2a0');
           ctx.restore();
         }
-        ellipse(p.x, p.y + 1, mounted ? 13 : 8, mounted ? 5 : 3, '#22342765');
-        if (chosen) ellipse(p.x, p.y, mounted ? 15 : 10, mounted ? 7 : 5, null, '#b9ecda');
+        if (!bodyOnly) {
+          ellipse(p.x, p.y + 1, mounted ? 13 : 8, mounted ? 5 : 3, '#22342765');
+          if (chosen) ellipse(p.x, p.y, mounted ? 15 : 10, mounted ? 7 : 5, null, '#b9ecda');
+        }
         if (mounted) {
           ellipse(p.x, p.y - 9, 13, 7, '#5e5946');
           polygon(
@@ -2635,9 +2705,9 @@
             u.cargo.type === 'gold' ? '#cbb15b' : u.cargo.type === 'food' ? '#c6a17a' : '#95815a',
           );
         }
-        if (chosen || u.hp < u.maxHp)
+        if (!bodyOnly && (chosen || u.hp < u.maxHp))
           bar(p.x, yy - (u.type.includes('pikeman') ? 35 : 32), u.hp / u.maxHp, TEAM[u.owner], 25);
-        if (u.buff > 1) {
+        if (!bodyOnly && u.buff > 1) {
           ctx.fillStyle = '#e2c979';
           ctx.fillRect(p.x - 1, yy - 39, 3, 3);
         }
@@ -2698,14 +2768,20 @@
           ...game.units.filter((u) => u.hp > 0),
         ];
         objects.sort((a, b) => a.x + a.y - (b.x + b.y));
+        const behind = [];
         for (const e of objects) {
           const s = screen(e.x, e.y);
           if (s.x < -130 || s.x > width + 130 || s.y < -30 || s.y > height + 120) continue;
           if (e.entity === 'resource') {
             if (selectedResource === e.id) tile(e.gx, e.gy, '#e5d28055', '#e5d280');
             drawResource(e);
-          } else if (e.entity === 'building') drawBuilding(e);
-          else drawUnit(e);
+          } else if (e.entity === 'building') {
+            drawBuilding(e);
+            drawOccludedUnits(e, behind);
+          } else {
+            drawUnit(e);
+            behind.push(e);
+          }
         }
         if (placement) {
           const p = world(pointer.x, pointer.y),

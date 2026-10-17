@@ -22,6 +22,7 @@ jobs:
         run: |
           python3 tools/sync_browser_demo.py --check
           node tests/browser_demo_model.cjs
+          node tests/browser_missions_model.cjs
       - name: Install pinned Godot standard runtime
         shell: bash
         run: |

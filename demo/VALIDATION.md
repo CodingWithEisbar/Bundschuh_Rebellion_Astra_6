@@ -1,5 +1,43 @@
 # Gameplay demo — validation
 
+## Mission demos — 2026-10-18
+
+- `node tests/browser_occlusion_ui.cjs`: **57 checks passed**, so sánh pixel
+  renderer thật của skirmish và cả 13 nhiệm vụ qua `file://` offline. Unit sau
+  mái/tường có viền theo dáng người, vũ khí, ngựa hoặc xe; unit phía trước,
+  unit chết, nền xây và nhà đã mất không sinh viền. Vòng chọn, aura, thanh máu
+  không bị đưa vào đường viền. Đã xem ảnh kỵ binh và xe sau sở chỉ huy.
+- `node tests/browser_demo_ui.cjs`: **26 checks passed** lại trên Edge offline.
+- `node tests/browser_missions_model.cjs`: **51 cases passed**, chạy model thật
+  trong từng HTML, khởi tạo và đi qua mục tiêu tới trạng thái thắng của đủ 13 màn
+  bằng fixture, cùng các ca thua/mất xe/tù binh/detection/payroll và di chuyển thật.
+  Kiểm tra thêm vòng khai thác/giao Food bảo toàn tài nguyên ở cả 13 màn; CSS,
+  projection isometric và renderer công trình dùng trực tiếp từ file mẫu.
+- `node tests/browser_missions_rts_ui.cjs`: **290 checks passed**, Edge qua
+  `file://` với network offline. Cả 13 màn dùng menu hai cột, HUD, minimap, camera
+  và zoom của file mẫu. Thao tác thật: click phải khai thác và giao hàng; H + click
+  dựng foundation, dân đi xây hoàn tất và tăng housing; Home chọn TC, trả giá và
+  chờ đủ thời gian tuyển dân; B/C giữ phím xây cũ, V vẫn chọn thợ, Q chọn hero.
+  Player nhạc menu ẩn được tạo một lần, giải phóng trước gameplay. Bố cục
+  1440×900/1024×768, hook chỉ bật với `?test=1`; không lỗi JS/HTTP request.
+- `node tests/browser_demo_model.cjs`: **17 cases passed**, gồm bảo toàn tài
+  nguyên và mixed-speed crowd cũ. `sync_browser_demo.py --check`: 14 file
+  nhiệm vụ/index và snapshot combat đều khớp nguồn.
+- Godot 4.5.2: `campaign_tests.gd` **38 cases passed**, có đủ 13 đường hoàn
+  thành mục tiêu, đổi scene, layout, actual-center navigation, tiếp tục lệnh sau
+  giao chiến, giữ vị trí, nguồn Food thật và nonlethal surrender. Đã xem ảnh render
+  thực tế của menu và trận Godot. Với HTML đã xem ảnh menu A3 sau hiệu ứng vào,
+  cảnh làng/quân isometric A1/A3/A6/B4/B5 và A3 ở 1024×768.
+- Gate `tools/verify.py --godot …4.5.2…`: **145 integration cases passed**,
+  gồm Stage 1–5, campaign, Python parser/reload, balance 10×, các backend demo,
+  HUD/input và cảnh khởi động mới. Không có script/runtime error hoặc resource leak.
+
+Các ca thắng dùng vị trí/HP fixture để kiểm tra logic mục tiêu, không phải bot
+chơi tự nhiên hoặc bằng chứng mức khó/cân bằng của cả campaign. Phạm vi và
+những cơ chế GDD còn thiếu ghi ở [CAMPAIGN_DEMOS.md](../docs/CAMPAIGN_DEMOS.md).
+
+## Skirmish — lần kiểm tra trước
+
 Kiểm tra ngày 2026-10-12. Đây là kiểm tra bản Canvas độc lập; không nâng phạm vi
 cam kết của military navigation, campaign hoặc balance trong Godot.
 

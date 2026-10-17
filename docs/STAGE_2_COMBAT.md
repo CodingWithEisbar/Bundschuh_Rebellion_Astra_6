@@ -217,6 +217,9 @@ có command queue authoritative hoặc lockstep multiplayer.
 4. `unit_died`/desertion làm host xử lý selection, occupancy, population, visual
    ownership và garrison exit. Spawn API không tự thu giá tuyển hoặc cấp housing.
 
+Scene nhiệm vụ bổ sung `CampaignBattle` dùng chính backend này; xem
+[CAMPAIGN_DEMOS.md](CAMPAIGN_DEMOS.md) về tactical navigation/UI mới và giới hạn.
+
 **Giới hạn adapter:** controller Stage 1 đồng bộ mọi dân ở 0.80 tiles/s. Stage 2
 đã cung cấp speed/budget có buff, nhưng chưa gắn controller cũ vào roster quân
 chiến đấu có tốc độ/kích thước khác nhau. Không thay riêng thời gian interpolation

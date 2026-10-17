@@ -7,7 +7,24 @@
 **Stage 5 — Data-Driven Balance, Headless Arena & Runtime Reload**
 Engine được ghim: **Godot 4.5.2 Standard**, GDScript có kiểu dữ liệu. Mở project và chạy ngay, không cần .NET, asset pack hoặc plugin trả phí.
 
-Đây là nền prototype có mã nguồn, scene điều khiển và regression tests. Presentation hiện là top-down greybox để kiểm tra gameplay; hướng isometric sprite và art/audio của GDD Phase 4 sẽ được áp dụng ở giai đoạn nội dung.
+F5 hiện mở **menu 13 nhiệm vụ chơi được**: A1–A6, B1–B6 và prototype Joß Fritz.
+Chọn màn → đọc briefing → **Bắt đầu nhiệm vụ**. Godot có bản đồ vẽ cảnh làng/rừng,
+quân hai bên, chọn/kéo quân, giao chiến, hộ tống, giữ điểm và thắng/thua theo mục
+tiêu. Nút **Sandbox kinh tế Stage 1–5** mở lại cảnh thử khai thác/xây dựng cũ.
+Đây vẫn là prototype top-down vẽ bằng mã, chưa phải art isometric hoặc campaign
+toàn cỡ. [Phạm vi và hướng dẫn nhiệm vụ](docs/CAMPAIGN_DEMOS.md).
+
+## Demo các nhiệm vụ — mở HTML offline
+
+Mở [demo/index.html](demo/index.html) để chọn màn, hoặc tải riêng một HTML nhiệm vụ
+trong `demo/` rồi mở trực tiếp. Có **13 file độc lập**, mỗi file khoảng 4 MB,
+dùng trực tiếp giao diện và renderer isometric của `bundschuh_rebellion.html`:
+menu biên niên sử, HUD tài nguyên, làng, quân đội, camera và minimap. Có đầy đủ
+khai thác, giao hàng, xây nhà/trại lính/kho và tuyển quân bằng H/B/C như file mẫu.
+Nhạc menu AAC nhúng sẵn; không cần Godot, server, Internet hay asset ngoài.
+Dữ liệu mục tiêu dùng chung với
+Godot từ [campaigns.v1.json](data/missions/campaigns.v1.json). Briefing ghi rõ các
+mốc thời gian/đạo quân rút gọn và những tính năng GDD chưa có.
 
 ## Demo một file — mở và chơi ngay
 
@@ -27,8 +44,10 @@ trận thử và cách đồng bộ dữ liệu. Source Godot và các bước c
 1. Tải [Godot 4.5.2 Standard](https://godotengine.org/download/archive/4.5.2-stable/) cho Windows/macOS/Linux.
 2. Clone repo hoặc chọn **Code → Download ZIP**, sau đó giải nén.
 3. Mở Godot → **Import** → chọn **project.godot** trong thư mục repo.
-4. Chờ Godot import scripts rồi nhấn **F5**.
-5. Kéo chọn dân và click phải vào tài nguyên; số trên HUD tăng khi dân giao hàng về nhà nhận phù hợp.
+4. Chờ Godot import scripts rồi nhấn **F5** → chọn nhiệm vụ → **Bắt đầu nhiệm vụ**.
+5. Click/kéo chọn; click phải ra lệnh. **Tab** chọn quân, **Q** hero, **V** dân,
+   **C** xe/sứ giả, **Space** tạm dừng, **Esc** về danh sách nhiệm vụ. Muốn thử
+   khai thác/xây nhà, chọn **Sandbox kinh tế Stage 1–5** từ menu.
 
 Nếu dùng Git:
 
@@ -59,7 +78,7 @@ Không cần export templates để chạy bằng editor. Repo không chứa bin
 | Balance tools | JSON/schema, reload có revision, arena 100 Flailmen vs 20 Gendarmes ở 10×, JSON/CSV và Python CLI |
 | Verification | Tests chạy bằng Godot thật; kiểm tra 200 quân qua choke một ô, đi ngược chiều, bảo toàn tài nguyên và construction |
 
-## Điều khiển
+## Điều khiển sandbox kinh tế
 
 | Thao tác | Phím / chuột |
 |---|---|
@@ -96,19 +115,26 @@ Cần Python 3.10 trở lên và Godot 4.5.2; không cần package Python bổ s
 
 Windows PowerShell, thay đường dẫn bằng vị trí Godot thực tế:
 
+    $env:PYTHONUTF8 = "1"
+    $env:PYTHONIOENCODING = "utf-8"
     python tools/verify.py --godot "C:\Tools\Godot\Godot_v4.5.2-stable_win64.exe"
 
 Linux/macOS:
 
     python3 tools/verify.py --godot /path/to/godot
 
-Lệnh thực hiện import/compile, regression tests cả năm stage, Python parser/live-reload tests, trận balance 10×, ba demo tích hợp, HUD layout check và main-scene smoke test. Report JSON nằm trong **test-results/stage1.json** tới **stage5.json**, thêm **stage5_python.json**; thư mục này được bỏ qua trong Git. Parser/runtime errors làm validation thất bại kể cả khi Godot trả exit code 0.
+Lệnh thực hiện import/compile, regression tests cả năm stage, 13 mission demos,
+Python parser/live-reload, trận balance 10×, ba backend demo, HUD và main-scene
+smoke test. Report JSON nằm trong **test-results/stage1.json** tới **stage5.json**,
+thêm **stage5_python.json** và **campaign.json**; thư mục này được bỏ qua trong Git.
+Parser/runtime errors làm validation thất bại kể cả khi Godot trả exit code 0.
 
 CI tương ứng: [.github/workflows/godot.yml](.github/workflows/godot.yml). Workflow ghim engine và checksum, chỉ cần quyền đọc nội dung repo.
 
 ## Thử Stage 2 backend
 
-F5/F6/F7 vẫn chạy sandbox economy/navigation. Để chạy ví dụ combat, aura và payroll:
+F5 mở menu campaign; nút Sandbox trong menu mở lại economy/navigation với F6/F7.
+Để chạy ví dụ combat, aura và payroll độc lập:
 
     godot --headless --path . --script examples/stage2_backend_demo.gd
 

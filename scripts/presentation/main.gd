@@ -391,7 +391,7 @@ func _build_hud() -> void:
 	seed_input.tooltip_text = "Black Forest seed. Enter or F8 regenerates the sandbox."
 	seed_input.text_submitted.connect(func(_text: String) -> void: _reset_forest())
 	scenarios.add_child(seed_input)
-	actions.add_child(_label("F9: animation/audio lab · resets current map", 13, Color("#9caaac")))
+	actions.add_child(_button("Campaign / Nhiệm vụ", func() -> void: get_tree().change_scene_to_file("res://scenes/campaign.tscn")))
 
 
 func _panel() -> PanelContainer:
