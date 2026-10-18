@@ -7,6 +7,10 @@
   và các liên kết chuyển màn cần những file tương ứng nằm cùng thư mục.
   Toàn bộ menu, CSS, renderer isometric, điều khiển và HUD lấy từ
   `bundschuh_rebellion.html`; chỉ bổ sung dữ liệu/mục tiêu và nhóm nhân vật nhiệm vụ.
+  Trang index cho chọn phe/chương, đọc briefing và bắt đầu thẳng nhiệm vụ. Nhạc
+  M4A/AAC chỉ nhúng ở index, tự yêu cầu phát khi mở và dừng trước khi vào trận;
+  nếu bị chặn autoplay, tương tác chọn phe/chương để thử phát lại. Các file màn
+  chơi mở riêng vẫn có briefing, không phát nhạc menu.
 - **Godot 4.5.2 Standard:** import `project.godot`, F5, chọn màn, đọc briefing và
   bắt đầu. Scene mặc định là `scenes/campaign.tscn`. `scenes/main.tscn` vẫn là
   sandbox kinh tế/navigation cũ và có nút quay lại Campaign.
@@ -18,6 +22,12 @@ kéo chuột giữa để di chuyển camera; con lăn zoom; Home về sở ch�
 R dân cần cứu/courier, T xe/sứ giả/tù binh. Click TC/Barracks để tuyển; click hàng
 chờ để hủy và hoàn tiền. Khai thác chỉ cộng tài nguyên khi giao về kho. Đầu trận
 chọn sẵn tám thợ thật; hero và dân nhiệm vụ không trở thành thợ xây/khai thác.
+Nhấp đúp chuột trái vào một quân sẽ chọn toàn bộ quân còn sống cùng loại của
+bạn trên bản đồ; giữ Shift để thêm vào nhóm hiện tại. Dân khai thác, hero, xe,
+courier và dân nhiệm vụ được phân biệt dù có thể dùng chung base Villager.
+Quân được chọn có quyền ưu tiên di chuyển: đồng minh chắn đường né cục bộ và
+giữ lệnh/cargo để tiếp tục sau đó. Địch/trung lập và lệnh Giữ vị trí không nhường;
+nếu không có chỗ trống an toàn thì chờ, không đẩy xuyên body/công trình.
 
 **Godot tactical:** Tab chọn quân, Q hero, V dân/courier, C xe/sứ giả/tù binh.
 Trong cả hai bản, X dừng lệnh, Space
@@ -25,6 +35,10 @@ tạm dừng. Chọn nhóm nhỏ khi lối đi đông. Điểm chiếm cần ba 
 bán kính 3 ô và không có quân địch trong 4 ô, liên tục 6 giây. Sau đó giữ đủ
 thời gian trên bảng mục tiêu; contested tạm dừng capture, bỏ trống giảm 2s/s.
 Thời gian giữ của mục tiêu bị reset khi chưa đủ số điểm thuộc quyền mình.
+
+**HTML và Godot:** nút **Ẩn mục tiêu / Hiện mục tiêu** trên bảng mục tiêu hoặc
+phím **O** thu gọn/hiện lại bảng. Mục tiêu và tiến độ vẫn cập nhật khi đang ẩn;
+tùy chọn giữ nguyên khi chơi lại trong lần mở hiện tại.
 
 Người trung lập có màu vàng; tiến tới trong 2,5 ô để họ gia nhập, rồi chọn dân
 đưa về cửa thoát. Việc giải cứu chỉ đếm các ID mang nhãn trong scenario. Đứng
@@ -103,10 +117,10 @@ hứa kết quả combat từng tick giống hệt nhau.
   đợt thường hoặc 6 đợt A6. Ngoài các grants này, HTML có AI kinh tế/tuyển quân
   thật: bắt đầu tuyển từ giây 35, tấn công căn cứ từ 150s như bản mẫu. P0/A1
   giữ stealth và chỉ cho thợ AI hoạt động; không tự bật các đợt đánh căn cứ.
-- HTML nhiệm vụ nhúng **bản AAC của cùng bài nhạc menu**, khoảng 4 MB/file. Giữ
-  player ẩn, autoplay/retry sau tương tác, dừng/giải phóng khi vào trận hoặc ẩn tab,
-  không phụ thuộc mạng. File gốc vẫn giữ nguyên ALAC/M4A và AAC. Hiệu ứng giới
-  thiệu bay từ trái và reduced motion dùng chính CSS/lifecycle của file mẫu.
+- HTML nhiệm vụ không còn nhạc menu, mỗi file khoảng 160 KB. **Index nhúng nguyên
+  bản ALAC/M4A và bản AAC tương thích**, giữ player ẩn, autoplay/retry sau tương
+  tác, dừng/giải phóng trước khi vào trận hoặc ẩn tab, không phụ thuộc mạng.
+  Hiệu ứng giới thiệu bay từ trái và reduced motion giữ phong cách file mẫu.
 
 Godot dùng `CampaignBattle` → `RtsSimulation.step()` → `CombatWorld` và
 `MissionTriggerManager`, chung clock 20 Hz, ResourceBank thật. Adapter quân sự

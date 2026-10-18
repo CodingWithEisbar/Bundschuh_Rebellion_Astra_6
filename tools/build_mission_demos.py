@@ -5,6 +5,7 @@ Original CSS, isometric drawing, input, economy, construction and recruitment
 stay shared. Only scenario data and explicit mission integration hooks differ.
 """
 import argparse
+import base64
 import html
 import json
 from pathlib import Path
@@ -33,10 +34,8 @@ def generate(check=False):
     original = (ROOT / 'demo/bundschuh_rebellion.html').read_text(encoding='utf-8')
     src = ROOT / 'demo/src'
     rts = json.loads((ROOT / 'data/missions/browser_rts.v1.json').read_text(encoding='utf-8'))
-    # Keep the supplied ALAC byte-for-byte in the original; mission copies embed
-    # its existing AAC fallback, avoiding thirteen copies of the 31 MB ALAC block.
-    template = re.sub(r'(<script id="menu-music-data"[^>]*>).*?(</script>)',r'\1\2',original,flags=re.S)
-    template = replace_once(template, "let dataId = player.canPlayType('audio/mp4; codecs=\"alac\"')\n          ? 'menu-music-data'\n          : 'menu-music-fallback-data';", "let dataId = 'menu-music-fallback-data';")
+    # Music belongs to the mission selector; standalone gameplay stays silent.
+    template = original
     template = replace_once(template, '/* MODEL_END */', (src/'mission_model.js').read_text(encoding='utf-8')+'\n/* MODEL_END */')
     template = replace_once(template, 'let game = new Game(),','let game = new MissionGame(),')
     template = replace_once(template, "chosenFaction = 'bundschuh',",'chosenFaction = PACK.mission.side,')
@@ -53,7 +52,6 @@ def generate(check=False):
     ui = replace_once(ui, 'function commandAt(x, y, advance = false) {','function commandAt(x, y, advance = false) {\n        if (missionBeforeCommand(x, y)) return;')
     ui = replace_once(ui, "        tone(win ? 'win' : 'lose');", "        updateMissionResult();\n        tone(win ? 'win' : 'lose');")
     ui = replace_once(ui, "        toast('Làng đang chờ lệnh. Chia dân lấy lương thực, gỗ và vàng.');", "        lastMissionNotice = '';\n        toast(PACK.mission.id + ': chia dân khai thác, xây làng và hoàn thành mục tiêu. Q chọn hero.');")
-    ui = replace_once(ui, '// Preserve the supplied lossless M4A; use the AAC copy when ALAC is unsupported.', '// Mission copies embed the AAC recording; the original retains ALAC and AAC.')
     ui = replace_once(ui, "new URLSearchParams(location.search).has('test')", "new URLSearchParams(location.search).get('test') === '1'")
     ui = replace_once(ui, '    </script>', (src/'mission_rts_ui.js').read_text(encoding='utf-8')+'\n    </script>')
     template = core+'/* MODEL_END */'+ui
@@ -70,12 +68,42 @@ def generate(check=False):
         text = replace_once(text,'<title>Bundschuh: Rebellion · Black Forest</title>','<title>'+html.escape(spec['id']+' · '+spec['title'])+' · Bundschuh: Rebellion</title>')
         files[ROOT / 'demo' / spec['file']] = text
     cards = []
+    menu_missions = []
     for spec in catalog['missions']:
-        cards.append('<a class="card" href="%s"><small>%s · %s</small><h2>%s</h2><p>%s</p><span>CHƠI OFFLINE →</span></a>' % tuple(html.escape(str(v)) for v in [spec['file'], spec['id'], 'BUNDSCHUH' if spec['side']=='bundschuh' else 'SWABIAN LEAGUE', spec['title'], spec['place']]))
-    files[ROOT / 'demo/index.html'] = '''<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>13 nhiệm vụ · Bundschuh: Rebellion</title><style>
-*{box-sizing:border-box}body{margin:0;background:#142219;color:#e7dcc0;font:16px/1.6 system-ui,sans-serif}main{max-width:1240px;margin:auto;padding:64px 32px}small{font-size:12px;letter-spacing:.16em;color:#d4b46f}h1{font:clamp(36px,5vw,68px) Georgia,serif;margin:14px 0}p{color:#b5bea9;max-width:820px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;margin:40px 0}.card{padding:26px;border:1px solid #52624a;background:#1c2d21;color:inherit;text-decoration:none;transition:background .2s}.card:hover{background:#2e422b;border-color:#d4b46f}.card h2{font:23px Georgia,serif;margin:16px 0}.card p{font-size:14px;min-height:44px}.card span{font-size:12px;letter-spacing:.12em;color:#9dcc9c}a{color:#d4b46f}footer{border-top:1px solid #52624a;padding-top:20px;font-size:14px}</style></head><body><main>
-<small>1524–1525 / ISOMETRIC RTS MISSIONS</small><h1>Bundschuh : Rebellion</h1><p>Mười ba nhiệm vụ dùng cùng giao diện và cách chơi của <a href="bundschuh_rebellion.html">Bundschuh: Rebellion — Black Forest</a>: làng isometric, khai thác, xây dựng, tuyển quân, camera và minimap.</p><p>Mỗi HTML mở riêng, chơi offline và có nhạc menu nhúng sẵn. Giữ lệnh H/B/C xây nhà/trại lính/kho; Tab chọn quân, V chọn dân rảnh. Các nhóm nhiệm vụ dùng Q/R/T. Bản đồ, thời gian và quân số được rút gọn, không phải toàn bộ campaign GDD.</p>
-<div class="grid">''' + ''.join(cards) + '''</div><footer>Mở Godot 4.5.2 → Import project.godot → F5 để chọn cùng 13 nhiệm vụ. Sandbox Stage 1–5 có nút riêng trong menu. Không cần server, CDN, npm hoặc tài khoản. Mỗi HTML nhiệm vụ là một file độc lập; liên kết chọn màn cần các file còn lại trong cùng thư mục.</footer></main></body></html>'''
+        campaign = 'prototype' if spec['id'] == 'P0' else spec['side']
+        first = spec['id'] == 'A1'
+        title = spec['title'].split(' · ')
+        cards.append(
+            '<button class="card" data-mission="%s" data-campaign="%s" aria-pressed="%s"%s>'
+            '<span class="mission-number">%s</span><span class="card-copy"><strong>%s</strong>'
+            '<small>%s</small></span><span class="card-arrow" aria-hidden="true">→</span></button>'
+            % tuple(html.escape(str(v), quote=True) for v in [
+                spec['id'], campaign, str(first).lower(),
+                '' if campaign == 'bundschuh' else ' hidden',
+                spec['id'], title[-1], title[0]]))
+        menu_missions.append({key: spec[key] for key in ['id', 'file', 'title', 'place', 'brief', 'limits']}
+                             | {'goals': [goal['label'] for goal in spec['goals']]})
+    first = next(spec for spec in catalog['missions'] if spec['id'] == 'A1')
+    menu = (src / 'mission_index.html').read_text(encoding='utf-8')
+    replacements = {
+        '<!-- MISSION_CARDS -->': ''.join(cards),
+        '<!-- MISSIONS_DATA -->': encode(menu_missions),
+        '<!-- INITIAL_PLACE -->': html.escape(first['place']),
+        '<!-- INITIAL_FILE -->': html.escape(first['file'], quote=True),
+        '<!-- INITIAL_TITLE -->': html.escape(first['title']),
+        '<!-- INITIAL_BRIEF -->': html.escape(first['brief']),
+        '<!-- INITIAL_LIMITS -->': html.escape(first['limits']),
+        '<!-- INITIAL_GOALS -->': ''.join('<li>' + html.escape(goal['label']) + '</li>' for goal in first['goals']),
+    }
+    music = []
+    for data_id, filename in [('menu-music-data', 'Wir sind des Geyers schwarzer Haufen.m4a'),
+                              ('menu-music-fallback-data', 'menu_music_aac.m4a')]:
+        payload = base64.b64encode((ROOT / 'sources' / filename).read_bytes()).decode('ascii')
+        music.append('<script id="%s" type="audio/mp4">%s</script>' % (data_id, payload))
+    replacements['<!-- MENU_MUSIC_DATA -->'] = '\n    '.join(music)
+    for marker, value in replacements.items():
+        menu = replace_once(menu, marker, value)
+    files[ROOT / 'demo/index.html'] = menu
     stale = []
     for path, text in files.items():
         if check:

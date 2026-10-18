@@ -8,8 +8,7 @@ function test(name,run){run();passed++;console.log('PASS',name);}
 function load(spec){
   const html=fs.readFileSync(path.join(root,'demo',spec.file),'utf8'),tags={};
   assert.ok(html.includes(masterCss),'complete original CSS is preserved');
-  const audio=text=>text.match(/<script id="menu-music-fallback-data"[^>]*>(.*?)<\/script>/s)[1];
-  assert.ok(audio(html)===audio(master),'same embedded AAC recording as the original');
+  assert.ok(!html.includes('menu-music-'),'music is owned exclusively by index.html');
   for(const marker of ['<header class="top">','<section class="hud">','id="minimap"','const project = (x, y) => ({ x: (x - y) * 26, y: (x + y) * 13 });'])assert.ok(html.includes(marker),'original isometric HUD: '+marker);
   const building=text=>text.split('function drawBuilding(b) {')[1].split('function bar(')[0];
   assert.equal(building(html),building(master),'buildings use the exact original renderer');

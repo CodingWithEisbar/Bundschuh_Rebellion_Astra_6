@@ -211,7 +211,21 @@ func _run() -> void:
 		scene.current_index=i
 		scene._start()
 		check(scene.battle.spec.id==specs[i].id and not scene.menu.visible,"scene starts "+specs[i].id)
+		var before_time: float = scene.battle.sim.time
+		var before_selection: Array = scene.selected.duplicate()
+		scene.objectives_button.pressed.emit()
+		scene._refresh()
+		check(not scene.objectives_content.visible and scene.objectives_button.visible and scene.objectives_button.text=="Hiện mục tiêu [O]",specs[i].id+" hides objective content and retains restore button")
+		check(scene.battle.sim.time==before_time and scene.selected==before_selection,specs[i].id+" objective toggle preserves simulation and selection")
 		scene.battle.step()
+		scene._refresh()
+		check(not scene.objectives_content.visible and not scene.objectives_label.text.is_empty(),specs[i].id+" hidden objectives still update after a simulation tick")
+		var toggle_key := InputEventKey.new()
+		toggle_key.keycode = KEY_O
+		toggle_key.pressed = true
+		Input.parse_input_event(toggle_key)
+		await process_frame
+		check(scene.objectives_content.visible and scene.objectives_button.text=="Ẩn mục tiêu [O]",specs[i].id+" O restores objectives")
 	scene.free()
 	passed+=1
 	var report := {"passed":passed,"failed_assertions":errors.size(),"errors":errors}

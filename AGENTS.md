@@ -86,15 +86,19 @@ This project is already backed by Git; source and its docs belong in this repo.
 slice, not a Godot Web export. Keep its scenario tuning separate from core
 balance and retain its documented limitations in `demo/README.md`. No CDN,
 remote fonts, external assets or runtime npm dependencies may be required for
-core gameplay. The current user request replaces the earlier YouTube/visible-MP3
-player with the supplied M4A embedded verbatim as base64 (`audio/mp4`), plus an
-AAC copy of that recording for browsers that cannot decode its ALAC codec. Keep all
-music UI hidden; request autoplay on menu entry and retry blocked playback during
-a menu interaction. Browser policy may still prevent autoplay before a gesture.
-Stop and release the player before gameplay or when hidden. Network transitions
-must not interrupt embedded audio. Fly the introduction block in from the left
-after the menu's first paint; replay on menu entry and respect reduced motion.
-Offline gameplay must work.
+core gameplay. Menu music now belongs exclusively to `demo/index.html`: embed the
+supplied M4A verbatim as base64 (`audio/mp4`), plus the existing AAC copy from
+`sources/menu_music_aac.m4a` for browsers that cannot decode ALAC. Keep all music
+UI hidden; request autoplay on menu entry and retry blocked playback during a
+menu interaction. Browser policy may still prevent autoplay before a gesture.
+Selecting a faction/mission must keep music playing. Stop and release the player
+before launching gameplay, leaving the page or hiding it. Network transitions
+must not interrupt embedded audio. Index shows mission briefing and launches the
+selected HTML with `?play=1` to enter gameplay directly; standalone game files
+retain their briefing menus but no music. Generate index from
+`demo/src/mission_index.html`; do not overwrite its style with the old card grid.
+Fly the introduction block in from the left after the menu's first paint; replay
+on menu entry and respect reduced motion. Offline gameplay must work.
 
 Combat base stats are embedded from the shared JSON, never hand-edited in HTML:
     python3 tools/sync_browser_demo.py

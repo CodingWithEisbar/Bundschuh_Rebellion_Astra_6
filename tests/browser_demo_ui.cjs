@@ -50,6 +50,17 @@ fs.mkdirSync(out, { recursive: true });
       await page.evaluate(() => window.__RTS_DEMO__.selected.length === 8),
       'start selects eight villagers',
     );
+    const beforeObjectives = await page.evaluate(() => ({ tick: window.__RTS_DEMO__.game.tick, selected: window.__RTS_DEMO__.selected }));
+    await page.locator('#toggle-objectives').click();
+    check(await page.locator('#objective-content').isHidden() && await page.locator('#toggle-objectives').isVisible() &&
+      await page.locator('#toggle-objectives').getAttribute('aria-expanded') === 'false', 'objectives collapse while the restore button stays visible');
+    await page.evaluate(() => window.__RTS_DEMO__.setPaused(true));
+    check(await page.evaluate((before) => document.querySelector('#objective-content').hidden &&
+      window.__RTS_DEMO__.game.tick === before.tick && JSON.stringify(window.__RTS_DEMO__.selected) === JSON.stringify(before.selected), beforeObjectives),
+    'HUD refresh keeps objectives hidden without changing time or selection');
+    await page.keyboard.press('o');
+    check(await page.locator('#objective-content').isVisible() &&
+      await page.locator('#toggle-objectives').getAttribute('aria-expanded') === 'true', 'O restores the objectives');
     await page.screenshot({ path: path.join(out, 'game.png') });
     // Select by drag through the actual input adapter, then right click a resource.
     const points = await page.evaluate(() => {

@@ -83,9 +83,9 @@ function setupMissionPresentation() {
   document.querySelector('.setup > .eyebạnw').textContent='Nhiệm vụ của '+FACTIONS[s.side];
   document.querySelector('.setup h2').textContent=s.title.split(' · ').pop();
   document.querySelector('.setup .note').textContent=s.limits+' Bản HTML có thêm căn cứ và kinh tế RTS: chia dân khai thác, xây nhà, tuyển quân để hỗ trợ mục tiêu.';
-  document.querySelector('.mission > .eyebạnw').textContent=s.id+' · '+s.place;
+  document.querySelector('#objective-content > .eyebạnw').textContent=s.id+' · '+s.place;
   document.querySelector('.mission h2').textContent=s.title.split(' · ').pop();
-  document.querySelector('.mission > p').textContent='Xây làng, bảo vệ căn cứ và hoàn thành các mục tiêu bên dưới.';
+  document.querySelector('#objective-content > p').textContent='Xây làng, bảo vệ căn cứ và hoàn thành các mục tiêu bên dưới.';
   document.querySelector('.mapbox > span').firstChild.textContent=s.id+' · SEED ';
   $('world').setAttribute('aria-label','Chiến trường isometric '+s.title+'. Click/kéo chọn, click phải ra lệnh.');
   $('new-game').textContent='Xem lại briefing · Bỏ trận hiện tại';

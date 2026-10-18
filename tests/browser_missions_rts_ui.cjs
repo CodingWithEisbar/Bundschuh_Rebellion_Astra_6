@@ -16,12 +16,19 @@ const specs=JSON.parse(fs.readFileSync(path.join(root,'data/missions/campaigns.v
       check(await page.locator('#play').isVisible(),spec.id+' uses original two-column menu');
       check(await page.locator('.intro-copy h1 em').innerText()==='REBELLION',spec.id+' keeps chronicle title');
       check(await page.locator('[data-faction].active').getAttribute('data-faction')===spec.side,spec.id+' fixed mission faction');
-      check(await page.locator('#menu-music-player audio').count()===1,spec.id+' menu keeps hidden embedded music player');
+      check(await page.locator('audio').count()===0,spec.id+' standalone briefing leaves music on index.html');
       if(spec.id==='A3'){await page.waitForFunction(()=>Number(getComputedStyle(document.querySelector('.intro-copy')).opacity)>.98);await page.screenshot({path:path.join(out,'menu-A3.png')});}
       await page.locator('#play').click();await page.evaluate(()=>window.__RTS_DEMO__.setPaused(true));
-      check(await page.locator('#menu-music-player audio').count()===0,spec.id+' entering gameplay releases menu audio');
+      check(await page.locator('audio').count()===0,spec.id+' gameplay stays free of menu audio');
       check(await page.locator('.hud').isVisible()&&await page.locator('#minimap').isVisible(),spec.id+' same bottom HUD and minimap');
       check(await page.evaluate(()=>window.__RTS_DEMO__.selected.length===8),spec.id+' selects eight actual workers');
+      const beforeObjectives=await page.evaluate(()=>({tick:window.__RTS_DEMO__.game.tick,selected:window.__RTS_DEMO__.selected}));
+      await page.locator('#toggle-objectives').click();
+      check(await page.locator('#objective-content').isHidden()&&await page.locator('#toggle-objectives').isVisible()&&await page.locator('#toggle-objectives').getAttribute('aria-expanded')==='false',spec.id+' objectives collapse with a visible restore button');
+      await page.evaluate(()=>window.__RTS_DEMO__.setPaused(true));
+      check(await page.evaluate(before=>document.querySelector('#objective-content').hidden&&window.__RTS_DEMO__.game.tick===before.tick&&JSON.stringify(window.__RTS_DEMO__.selected)===JSON.stringify(before.selected),beforeObjectives),spec.id+' hiding objectives preserves time, selection and visibility across refresh');
+      await page.keyboard.press('o');
+      check(await page.locator('#mission-goals').isVisible()&&await page.locator('#toggle-objectives').getAttribute('aria-expanded')==='true',spec.id+' O restores all mission goals');
       // Dispatch an actual right-click to a berry bush; physical work and deposit follow.
       const food=await page.evaluate(()=>{const h=window.__RTS_DEMO__,g=h.game,r=g.resources.find(r=>r.type==='food'&&r.x<10);return {...h.screen(r.x,r.y),bank:g.players[0].bank.food};});
       await page.mouse.click(food.x,food.y,{button:'right'});
@@ -62,9 +69,12 @@ const specs=JSON.parse(fs.readFileSync(path.join(root,'data/missions/campaigns.v
     await page.setViewportSize({width:1024,height:768});await page.goto(pathToFileURL(path.join(root,'demo/a3_the_eternal_council.html')).href+'?test=1');await page.locator('#play').click();
     await page.evaluate(()=>window.__RTS_DEMO__.setPaused(true));await page.mouse.move(1000,740);await page.screenshot({path:path.join(out,'A3-1024.png')});
     check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'1024px has no horizontal overflow');
+    await page.locator('#toggle-objectives').click();
+    const toggleBox=await page.locator('#toggle-objectives').boundingBox();
+    check(toggleBox&&toggleBox.x>=0&&toggleBox.y>=0&&toggleBox.x+toggleBox.width<=1024&&toggleBox.y+toggleBox.height<=768,'1024px objectives restore button stays inside viewport');
     await page.goto(pathToFileURL(path.join(root,'demo/p0_secret_oath.html')).href);
     check(await page.evaluate(()=>typeof window.__RTS_DEMO__==='undefined'),'inspection hook only exists with ?test=1');
-    check(requests.every(u=>u.startsWith('file:')||u.startsWith('data:')),'all thirteen files stay offline including menu audio');
+    check(requests.every(u=>u.startsWith('file:')||u.startsWith('data:')),'all thirteen mission files stay offline');
     check(errors.length===0,'no runtime errors: '+errors.join('; '));
     fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({checks,errors,network:requests.filter(u=>/^https?:/.test(u))},null,2));
     console.log('Browser mission RTS UI:',checks,'checks passed');

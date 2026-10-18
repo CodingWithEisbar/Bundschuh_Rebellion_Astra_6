@@ -22,6 +22,8 @@ var briefing: RichTextLabel
 var title_label: Label
 var stock_label: Label
 var objectives_label: Label
+var objectives_content: VBoxContainer
+var objectives_button: Button
 var details_label: Label
 var status_label: Label
 var pause_button: Button
@@ -94,9 +96,14 @@ func _build_ui() -> void:
 	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stack.add_theme_constant_override("separation",18)
 	scroll.add_child(stack)
-	_label(stack,14).text = "MỤC TIÊU CHIẾN THUẬT"
-	objectives_label = _label(stack,16)
-	details_label = _label(stack,14)
+	objectives_button = _button("Ẩn mục tiêu [O]",_toggle_objectives,stack)
+	objectives_button.tooltip_text = "Ẩn/hiện bảng mục tiêu · O"
+	objectives_content = VBoxContainer.new()
+	objectives_content.add_theme_constant_override("separation",18)
+	stack.add_child(objectives_content)
+	_label(objectives_content,14).text = "MỤC TIÊU CHIẾN THUẬT"
+	objectives_label = _label(objectives_content,16)
+	details_label = _label(objectives_content,14)
 	_label(stack,14).text = "TUYỂN QUÂN TẠI TRẠI"
 	for type: String in ["peasant_flailman","pikeman","radical_preacher","landsknecht_pikeman","heavy_gendarme","crossbowman"]:
 		var raw := CombatUnitCatalog.default_database().definition(type)
@@ -225,6 +232,11 @@ func _select_tags(tags: Array) -> void:
 			selected.append(id)
 
 
+func _toggle_objectives() -> void:
+	objectives_content.visible = not objectives_content.visible
+	objectives_button.text = "Ẩn mục tiêu [O]" if objectives_content.visible else "Hiện mục tiêu [O]"
+
+
 func _select_heroes() -> void:
 	selected.clear()
 	for id: int in battle.bodies:
@@ -266,6 +278,7 @@ func _input(event: InputEvent) -> void:
 			KEY_Q: _select_heroes()
 			KEY_V: _select_tags(["civilian","courier"])
 			KEY_C: _select_tags(["cart","messenger","envoy","prisoner"])
+			KEY_O: _toggle_objectives(); get_viewport().set_input_as_handled()
 			KEY_X:
 				battle.stop(selected)
 	if event is InputEventMouseButton and event.pressed and map_rect.has_point(event.position):

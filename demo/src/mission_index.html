@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="Bundschuh: Rebellion — chọn một lá cờ, mở một chương lịch sử. 13 nhiệm vụ RTS chơi offline." />
+    <title>Bundschuh: Rebellion · Biên niên sử</title>
+    <style>
+      :root { color-scheme: dark; --paper: #e6dabd; --muted: #aab3a3; --gold: #d8b970; --line: #586454; }
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
+      html { min-height: 100%; background: #17231e; }
+      body { margin: 0; color: var(--paper); font: 14px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+      button, a { -webkit-tap-highlight-color: transparent; }
+      button { color: inherit; font: inherit; cursor: pointer; }
+      a { color: var(--gold); }
+      button:focus-visible, a:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+      h1, h2, h3, p { margin: 0; }
+      h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif; font-weight: normal; }
+      .landscape { position: fixed; inset: 0; overflow: hidden; z-index: -1; background: radial-gradient(ellipse at 78% 18%, #56604955, transparent 55%), #172b23; }
+      .landscape svg { width: 100%; height: 100%; object-fit: cover; opacity: .7; }
+      .landscape::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #0b1915ee, #0f1e188c), linear-gradient(0deg, #0b1915bb, transparent 65%); }
+      .masthead { width: min(1180px, 100%); margin: auto; padding: 25px 40px; display: flex; align-items: center; gap: 12px; }
+      .seal { display: grid; place-items: center; width: 28px; height: 34px; background: var(--gold); color: #26352d; font: 22px Georgia; clip-path: polygon(0 0, 100% 0, 95% 70%, 50% 100%, 5% 70%); }
+      .masthead span:last-child { color: #a8b49c; font-size: 10px; letter-spacing: 2.5px; }
+      .welcome { width: min(1180px, 100%); min-height: calc(100svh - 151px); margin: auto; padding: 22px 40px 44px; display: grid; grid-template-columns: 1fr 1.13fr; gap: 72px; align-items: center; }
+      .edition { color: #c4bd96; font-size: 10px; letter-spacing: 3.5px; margin-bottom: 27px; }
+      h1 { color: #ece3c7; font-size: clamp(52px, 6vw, 80px); line-height: .98; letter-spacing: -2px; }
+      h1 span, h1 em { display: block; }
+      h1 em { margin-top: 20px; font-size: .38em; font-style: normal; letter-spacing: 9px; color: #ccac68; }
+      .rule { width: 65px; height: 2px; background: #c4a060; margin: 32px 0 26px; }
+      .title-intro p { max-width: 390px; font-size: 14px; line-height: 1.85; color: #c2c9b3; }
+      .title-intro .subcopy { margin-top: 16px; color: #91a18c; font-size: 12px; }
+      .chronicle { display: flex; gap: 27px; border-top: 1px solid #58645477; padding-top: 23px; margin-top: 35px; max-width: 365px; }
+      .chronicle b { display: block; font: 25px Georgia, serif; color: #d6c99f; }
+      .chronicle span { color: #92a18a; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; }
+      .skirmish { display: inline-flex; align-items: center; gap: 12px; margin-top: 29px; color: #b9c1a8; font-size: 12px; text-decoration: none; }
+      .skirmish:hover { color: var(--gold); }
+      .skirmish span { color: var(--gold); }
+      .setup { background: #1e2c26ed; border: 1px solid #657050; padding: 27px; box-shadow: 0 20px 80px #0003; }
+      .eyebrow { color: var(--gold); font-size: 9px; font-weight: 650; letter-spacing: 2.5px; text-transform: uppercase; }
+      .panel-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 4px 0 21px; }
+      .panel-heading h2 { font-size: 29px; }
+      .panel-heading > span { color: #93a28d; font: 11px Georgia, serif; white-space: nowrap; }
+      .factions { display: grid; grid-template-columns: 1fr 1fr .8fr; gap: 7px; margin-bottom: 18px; }
+      .faction { border: 1px solid #4d5c45; background: #29382f; padding: 12px 6px; font-size: 12px; transition: background .15s, border-color .15s; }
+      .faction span { margin-right: 5px; color: var(--gold); font: 18px Georgia, serif; vertical-align: -1px; }
+      .faction:hover { background: #354532; border-color: #8a9165; }
+      .faction[aria-pressed="true"] { background: #3b4632; border-color: #c8ad68; box-shadow: inset 0 -2px var(--gold); }
+      .list-heading { display: flex; justify-content: space-between; color: #93a28d; font-size: 9px; letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 9px; }
+      .mission-list { display: grid; gap: 7px; max-height: 246px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #6b7456 #1a2821; padding: 3px 7px 3px 3px; margin: -3px -7px -3px -3px; }
+      .card { display: flex; width: 100%; align-items: center; gap: 14px; padding: 12px 13px; text-align: left; background: #26362c; border: 1px solid #465740; transition: background .15s, border-color .15s; }
+      .card:hover { border-color: #8a9165; background: #304130; }
+      .card[aria-pressed="true"] { background: #37432f; border-color: #bba365; box-shadow: inset 3px 0 var(--gold); }
+      .mission-number { font: 20px Georgia, serif; color: #bda66e; min-width: 29px; }
+      .card-copy { flex: 1; min-width: 0; }
+      .card strong { display: block; font: 17px Georgia, serif; }
+      .card small { display: block; color: #9cab92; font-size: 10px; margin-top: 3px; }
+      .card-arrow { color: #8f9c7c; }
+      .card[aria-pressed="true"] .card-arrow { color: var(--gold); }
+      .briefing { margin-top: 20px; padding-top: 17px; border-top: 1px solid #58645499; }
+      .briefing .place { color: #bdac7c; font-size: 10px; margin-bottom: 7px; }
+      .briefing h3 { font-size: 21px; margin-bottom: 9px; }
+      .briefing p { color: #aebba3; font-size: 11px; line-height: 1.75; }
+      .briefing details { margin-top: 9px; color: #aebba3; font-size: 11px; }
+      .briefing summary { cursor: pointer; color: #c7c6a4; }
+      .briefing ul { margin: 8px 0; padding-left: 18px; line-height: 1.8; }
+      .briefing .limits { color: #93a28d; }
+      .primary { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 19px; padding: 13px 16px; border: 1px solid #d8bd7c; background: #c9ae70; color: #202c24; text-decoration: none; font-size: 11px; font-weight: 700; letter-spacing: 2px; transition: background .15s; }
+      .primary:hover { background: #e1c88b; }
+      .primary span:last-child { font-size: 18px; line-height: 1; }
+      .mobile-note { color: #8f9d86; font-size: 10px; text-align: center; margin-top: 11px; }
+      .page-footer { display: flex; justify-content: space-between; gap: 18px; width: min(1100px, calc(100% - 80px)); margin: auto; padding: 17px 0 22px; border-top: 1px solid #58645455; color: #82927e; font-size: 9px; letter-spacing: 1.2px; }
+      .intro-copy { opacity: 1; }
+      .intro-ready .intro-copy { opacity: 0; transform: translate3d(-180px, 0, 0); }
+      .intro-enter .intro-copy { animation: menu-fly-in 1600ms cubic-bezier(.25,.46,.45,.94) 120ms both; }
+      @keyframes menu-fly-in { from { opacity: 0; transform: translate3d(-180px, 0, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+      @media (max-width: 1050px) { .welcome { gap: 38px; padding-inline: 30px; grid-template-columns: .9fr 1.15fr; } .setup { padding: 22px; } h1 { font-size: 62px; } }
+      @media (min-width: 761px) and (max-height: 850px) { .masthead { padding: 16px 30px; } .welcome { min-height: calc(100svh - 110px); padding-block: 12px 24px; } .setup { padding: 20px; } .panel-heading { margin-bottom: 14px; } .panel-heading h2 { font-size: 26px; } .factions { margin-bottom: 14px; } .faction { padding-block: 9px; } .mission-list { max-height: 174px; } .briefing { margin-top: 14px; padding-top: 12px; } .primary { margin-top: 14px; padding-block: 11px; } .page-footer { padding-block: 12px 15px; } }
+      @media (max-width: 760px) { .masthead { padding: 22px 24px; } .welcome { grid-template-columns: 1fr; gap: 36px; padding: 25px 24px 32px; } .title-intro { max-width: 520px; } h1 { font-size: clamp(51px, 11vw, 76px); } .chronicle { margin-top: 24px; } .setup { width: 100%; } .page-footer { width: calc(100% - 48px); flex-wrap: wrap; } }
+      @media (max-width: 380px) { .setup { padding: 17px; } .faction { font-size: 11px; } .faction span { display: none; } .primary { letter-spacing: 1.2px; } }
+      @media (prefers-reduced-motion: reduce) { .intro-ready .intro-copy { opacity: 1; transform: none; } .intro-enter .intro-copy { animation: none; } *, *::before, *::after { transition: none !important; } }
+    </style>
+  </head>
+  <body id="start">
+    <div class="landscape" aria-hidden="true">
+      <svg viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs><g id="pine"><path d="M0-210 42-130 25-130 60-60 37-60 78 20H-78L-37-60H-60L-25-130H-42Z" fill="currentColor"/><path d="M-5 0H5V65H-5Z" fill="currentColor"/></g></defs>
+        <path d="M0 450 170 340 360 390 570 280 810 375 1090 220 1440 355V1000H0Z" fill="#455e49"/>
+        <path d="M0 610 290 470 510 540 800 405 1030 510 1260 420 1440 470V1000H0Z" fill="#304e3a"/>
+        <g color="#284632"><use href="#pine" transform="translate(730 455) scale(.8)"/><use href="#pine" transform="translate(950 480) scale(1.1)"/><use href="#pine" transform="translate(1180 430) scale(.85)"/><use href="#pine" transform="translate(1330 480) scale(1.3)"/></g>
+        <path d="M0 720Q300 550 600 710T1440 620V1000H0Z" fill="#203e2c"/>
+        <g color="#173526"><use href="#pine" transform="translate(60 720) scale(2)"/><use href="#pine" transform="translate(260 740) scale(1.35)"/><use href="#pine" transform="translate(1190 760) scale(1.7)"/><use href="#pine" transform="translate(1450 790) scale(2.5)"/></g>
+        <path d="M0 900Q400 760 720 920T1440 800V1000H0Z" fill="#142e22"/>
+      </svg>
+    </div>
+    <header class="masthead"><span class="seal" aria-hidden="true">⚑</span><span>BUNDSCHUH &nbsp; / &nbsp; 1524 — 1525</span></header>
+    <main class="welcome">
+      <section class="title-intro" aria-labelledby="title">
+        <div class="intro-copy">
+          <div class="edition">MỘT BIÊN NIÊN SỬ CÓ THỂ CHƠI</div>
+          <h1 id="title"><span>Bundschuh</span><em>REBELLION</em></h1>
+          <div class="rule"></div>
+          <p>Dưới những tán thông, một lời thề trở thành cuộc nổi dậy. Xây dựng làng, tập hợp binh sĩ và đưa lá cờ của bạn qua những chương lịch sử.</p>
+          <p class="subcopy">Chọn một phía. Mở một chương. Câu chuyện bắt đầu từ mệnh lệnh của bạn.</p>
+        </div>
+        <div class="chronicle"><div><b>13</b><span>Nhiệm vụ</span></div><div><b>02</b><span>Chiến tuyến</span></div><div><b>1525</b><span>Cuộc nổi dậy</span></div></div>
+        <a class="skirmish" data-launch href="bundschuh_rebellion.html?play=1">Trận tự do · Black Forest <span aria-hidden="true">↗</span></a>
+      </section>
+      <section class="setup" aria-labelledby="missions-title">
+        <div class="eyebrow">Chọn một phía của lịch sử</div>
+        <div class="panel-heading"><h2 id="missions-title">Lá cờ của bạn</h2><span>BIÊN NIÊN SỬ / 13</span></div>
+        <div class="factions" role="group" aria-label="Chiến tuyến">
+          <button class="faction" data-campaign="bundschuh" aria-pressed="true"><span aria-hidden="true">⚑</span> Bundschuh</button>
+          <button class="faction" data-campaign="swabian_league" aria-pressed="false"><span aria-hidden="true">♞</span> Swabia</button>
+          <button class="faction" data-campaign="prototype" aria-pressed="false"><span aria-hidden="true">◇</span> Joß Fritz</button>
+        </div>
+        <div class="list-heading"><span>Chọn chương của bạn</span><span id="mission-count">06 nhiệm vụ</span></div>
+        <div class="mission-list" role="group" aria-label="Danh sách nhiệm vụ"><!-- MISSION_CARDS --></div>
+        <article class="briefing" aria-live="polite" aria-atomic="true">
+          <p class="place" id="mission-place"><!-- INITIAL_PLACE --></p>
+          <h3 id="mission-title"><!-- INITIAL_TITLE --></h3>
+          <p id="mission-brief"><!-- INITIAL_BRIEF --></p>
+          <details id="mission-details"><summary>Mục tiêu &amp; phạm vi bản demo</summary><ul id="mission-goals"><!-- INITIAL_GOALS --></ul><p class="limits" id="mission-limits"><!-- INITIAL_LIMITS --></p></details>
+        </article>
+        <a id="play" class="primary" data-launch href="<!-- INITIAL_FILE -->?play=1"><span>BẮT ĐẦU NHIỆM VỤ</span><span aria-hidden="true">→</span></a>
+        <p class="mobile-note">Chơi offline · Dành cho máy tính có chuột và bàn phím</p>
+      </section>
+    </main>
+    <footer class="page-footer"><span>RTS CAMPAIGN DEMO &nbsp; / &nbsp; BẢN ĐỒ &amp; THỜI GIAN RÚT GỌN</span><span>H / B / C · XÂY DỰNG &nbsp; / &nbsp; TAB · QUÂN ĐỘI</span></footer>
+    <div id="menu-music-player" hidden aria-hidden="true"></div>
+    <!-- MENU_MUSIC_DATA -->
+    <script id="missions-data" type="application/json"><!-- MISSIONS_DATA --></script>
+    <script>
+      'use strict';
+      const $ = (id) => document.getElementById(id);
+      const missions = JSON.parse($('missions-data').textContent);
+      const cards = [...document.querySelectorAll('[data-mission]')];
+      let leaving = false, introFrame = 0;
+      function selectMission(id) {
+        const mission = missions.find((item) => item.id === id);
+        if (!mission) return;
+        for (const card of cards) card.setAttribute('aria-pressed', String(card.dataset.mission === id));
+        $('mission-place').textContent = mission.place;
+        $('mission-title').textContent = mission.title;
+        $('mission-brief').textContent = mission.brief;
+        $('mission-limits').textContent = mission.limits;
+        $('mission-goals').replaceChildren(...mission.goals.map((goal) => {
+          const li = document.createElement('li'); li.textContent = goal; return li;
+        }));
+        $('play').href = mission.file + '?play=1';
+        $('mission-details').open = false;
+      }
+      for (const card of cards) card.addEventListener('click', () => selectMission(card.dataset.mission));
+      document.querySelectorAll('.faction[data-campaign]').forEach((button) => button.addEventListener('click', () => {
+        const campaign = button.dataset.campaign;
+        document.querySelectorAll('.faction[data-campaign]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+        for (const card of cards) card.hidden = card.dataset.campaign !== campaign;
+        const visible = cards.filter((card) => !card.hidden);
+        $('mission-count').textContent = String(visible.length).padStart(2, '0') + ' nhiệm vụ';
+        document.querySelector('.mission-list').scrollTop = 0;
+        selectMission(visible[0].dataset.mission);
+      }));
+      function stopMenuIntro() {
+        cancelAnimationFrame(introFrame); introFrame = 0;
+        document.body.classList.remove('intro-ready', 'intro-enter');
+      }
+      function playMenuIntro() {
+        stopMenuIntro();
+        if (document.hidden || leaving) return;
+        document.body.classList.add('intro-ready');
+        introFrame = requestAnimationFrame(() => {
+          introFrame = requestAnimationFrame(() => {
+            introFrame = 0;
+            if (!document.hidden && !leaving) document.body.classList.add('intro-enter');
+          });
+        });
+      }
+      function stopMenuMusic() {
+        const host = $('menu-music-player'), player = host.querySelector('audio');
+        host.replaceChildren();
+        if (player) { player.pause(); player.removeAttribute('src'); player.load(); }
+      }
+      function requestMenuMusicPlayback(player) {
+        if (player.parentNode !== $('menu-music-player') || leaving || document.hidden) return;
+        player.dataset.playback = 'loading';
+        player.play().catch((error) => {
+          if (player.parentNode !== $('menu-music-player') || error.name === 'AbortError') return;
+          player.dataset.playback = error.name === 'NotAllowedError' ? 'blocked' : 'error';
+        });
+      }
+      function syncMenuMusic() {
+        const host = $('menu-music-player');
+        if (leaving || document.hidden) { stopMenuMusic(); return; }
+        if (host.childElementCount) return;
+        const player = document.createElement('audio');
+        player.hidden = true; player.autoplay = true; player.loop = true; player.preload = 'auto';
+        let dataId = player.canPlayType('audio/mp4; codecs="alac"') ? 'menu-music-data' : 'menu-music-fallback-data';
+        player.src = 'data:audio/mp4;base64,' + $(dataId).textContent.trim();
+        player.addEventListener('playing', () => {
+          if (player.parentNode === host) player.dataset.playback = 'playing';
+        });
+        player.addEventListener('error', () => {
+          if (player.parentNode !== host) return;
+          if (dataId === 'menu-music-data') {
+            dataId = 'menu-music-fallback-data';
+            player.src = 'data:audio/mp4;base64,' + $(dataId).textContent.trim();
+            requestMenuMusicPlayback(player);
+          } else player.dataset.playback = 'error';
+        });
+        host.append(player); requestMenuMusicPlayback(player);
+      }
+      function retryMenuMusic(event) {
+        if (leaving || event.target.closest?.('[data-launch]')) return;
+        const player = $('menu-music-player').querySelector('audio');
+        if (player?.dataset.playback === 'blocked') requestMenuMusicPlayback(player);
+      }
+      document.addEventListener('pointerdown', retryMenuMusic, true);
+      document.addEventListener('keydown', retryMenuMusic, true);
+      document.addEventListener('click', (event) => {
+        const link = event.target.closest?.('a[data-launch]');
+        if (!link || event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        leaving = true; stopMenuIntro(); stopMenuMusic();
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) { stopMenuIntro(); stopMenuMusic(); }
+        else { playMenuIntro(); syncMenuMusic(); }
+      });
+      window.addEventListener('pagehide', () => { leaving = true; stopMenuIntro(); stopMenuMusic(); });
+      window.addEventListener('pageshow', () => { leaving = false; syncMenuMusic(); playMenuIntro(); });
+      syncMenuMusic();
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', playMenuIntro, { once: true });
+      else playMenuIntro();
+    </script>
+  </body>
+</html>

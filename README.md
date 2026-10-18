@@ -16,12 +16,14 @@ toàn cỡ. [Phạm vi và hướng dẫn nhiệm vụ](docs/CAMPAIGN_DEMOS.md).
 
 ## Demo các nhiệm vụ — mở HTML offline
 
-Mở [demo/index.html](demo/index.html) để chọn màn, hoặc tải riêng một HTML nhiệm vụ
-trong `demo/` rồi mở trực tiếp. Có **13 file độc lập**, mỗi file khoảng 4 MB,
+Mở [demo/index.html](demo/index.html) để chọn phe, đọc briefing và **Bắt đầu nhiệm vụ**,
+hoặc tải riêng một HTML nhiệm vụ trong `demo/` rồi mở trực tiếp. Có **13 file độc lập**, mỗi file khoảng 160 KB,
 dùng trực tiếp giao diện và renderer isometric của `bundschuh_rebellion.html`:
 menu biên niên sử, HUD tài nguyên, làng, quân đội, camera và minimap. Có đầy đủ
 khai thác, giao hàng, xây nhà/trại lính/kho và tuyển quân bằng H/B/C như file mẫu.
-Nhạc menu AAC nhúng sẵn; không cần Godot, server, Internet hay asset ngoài.
+Nhạc M4A/AAC nhúng trong `index.html`, tự yêu cầu phát khi mở trang và dừng trước
+khi vào trận. Nếu trình duyệt chặn tự phát, chọn phe/màn để thử lại. Không cần
+Godot, server, Internet hay asset ngoài.
 Dữ liệu mục tiêu dùng chung với
 Godot từ [campaigns.v1.json](data/missions/campaigns.v1.json). Briefing ghi rõ các
 mốc thời gian/đạo quân rút gọn và những tính năng GDD chưa có.
@@ -30,10 +32,9 @@ mốc thời gian/đạo quân rút gọn và những tính năng GDD chưa có.
 
 Tải [demo/bundschuh_rebellion.html](demo/bundschuh_rebellion.html) bằng **Download raw file**
 trên GitHub, rồi mở file HTML bằng trình duyệt máy tính. Không cần cài Godot hoặc
-chạy server. Có hai phe, economy, xây nhà, tuyển quân, AI, minimap và thắng/thua. Menu có
-nhạc M4A được nhúng sẵn, tự phát khi mở menu và dừng khi vào trận, nghe được offline.
-Phần điều khiển nhạc được ẩn; nếu trình duyệt chặn tự phát, tương tác trong menu
-(ví dụ chọn phe) để phát nhạc. Chữ giới thiệu hiện dần mỗi lần mở menu.
+chạy server. Có hai phe, economy, xây nhà, tuyển quân, AI, minimap và thắng/thua.
+Nhạc nền nằm ở [trang chọn nhiệm vụ](demo/index.html), nghe được offline và dừng khi
+vào trận. Mở riêng file skirmish không phát nhạc menu. Chữ giới thiệu hiện dần mỗi lần mở menu.
 
 Đây là bản gameplay Canvas độc lập dùng base stats JSON của repo, không phải bản
 export Godot. [Hướng dẫn và phạm vi demo](demo/README.md) có điều khiển, thông số
